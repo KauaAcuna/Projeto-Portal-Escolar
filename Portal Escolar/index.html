@@ -1,0 +1,229 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>EduConnect — Escola</title>
+  <link rel="stylesheet" href="style.css" />
+  <link href="https://fonts.googleapis.com/css2?family=Baloo+2:wght@400;500;600;700;800&family=Nunito:wght@400;500;600;700&display=swap" rel="stylesheet"/>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css"/>
+</head>
+<body>
+
+ 
+  <div id="loginScreen" class="screen active">
+    <div class="login-bg">
+      <div class="bubble b1"></div>
+      <div class="bubble b2"></div>
+      <div class="bubble b3"></div>
+      <div class="bubble b4"></div>
+    </div>
+    <div class="login-card">
+      <div class="login-logo">
+        <div class="logo-icon"></div>
+        <h1 class="logo-title">Escola</h1>
+        <p class="logo-sub">Escola</p>
+      </div>
+      <div class="role-selector">
+        <button class="role-btn active" data-role="pai" onclick="selectRole('pai', this)">
+          <span class="role-icon">👨‍👩‍👧</span>
+          <span>Sou Pai/Mãe</span>
+        </button>
+        <button class="role-btn" data-role="professora" onclick="selectRole('professora', this)">
+          <span class="role-icon">👩‍🏫</span>
+          <span>Sou Professora</span>
+        </button>
+        <button class="role-btn" data-role="diretor" onclick="selectRole('diretor', this)">
+          <span class="role-icon">🏫</span>
+          <span>Sou Diretor(a)</span>
+        </button>
+      </div>
+      <div class="login-form">
+        <div class="input-group">
+          <label>E-mail</label>
+          <input type="email" id="loginEmail" placeholder="seu@email.com" />
+        </div>
+        <div class="input-group">
+          <label>Senha</label>
+          <input type="password" id="loginPassword" placeholder="••••••••" />
+        </div>
+        <div id="loginError" class="login-error hidden">E-mail ou senha incorretos.</div>
+        <button class="btn-login" onclick="handleLogin()">Entrar <i class="fas fa-arrow-right"></i></button>
+      </div>
+      <p class="login-hint">
+        <i class="fas fa-info-circle"></i>
+        Use qualquer e-mail e senha "123"
+      </p>
+    </div>
+  </div>
+
+ 
+  <div id="appScreen" class="screen">
+
+  
+    <aside class="sidebar" id="sidebar">
+      <div class="sidebar-header">
+        <div class="sidebar-logo"></div>
+        <div class="sidebar-brand">
+          <span class="brand-name">Escola</span>
+          <span class="brand-school">Escola</span>
+        </div>
+        <button class="sidebar-close" onclick="toggleSidebar()"><i class="fas fa-times"></i></button>
+      </div>
+
+      <div class="user-profile">
+        <div class="user-avatar" id="userAvatar">👤</div>
+        <div class="user-info">
+          <p class="user-name" id="userName">Carregando...</p>
+          <p class="user-role" id="userRoleLabel">—</p>
+        </div>
+      </div>
+
+      <nav class="sidebar-nav">
+        <button class="nav-item active" onclick="navigate('feed', this)">
+          <i class="fas fa-home"></i><span>Início</span>
+        </button>
+        <button class="nav-item" onclick="navigate('mensagens', this)">
+          <i class="fas fa-envelope"></i><span>Mensagens</span>
+          <span class="nav-badge" id="msgBadge">2</span>
+        </button>
+        <button class="nav-item" onclick="navigate('avisos', this)">
+          <i class="fas fa-bell"></i><span>Avisos</span>
+        </button>
+        <button class="nav-item" onclick="navigate('agenda', this)">
+          <i class="fas fa-calendar-alt"></i><span>Agenda</span>
+        </button>
+        <button class="nav-item" id="navAlunos" onclick="navigate('alunos', this)">
+          <i class="fas fa-child"></i><span>Alunos</span>
+        </button>
+        <button class="nav-item" onclick="navigate('contatos', this)">
+          <i class="fas fa-address-book"></i><span>Contatos</span>
+        </button>
+      </nav>
+
+      <button class="btn-logout" onclick="handleLogout()">
+        <i class="fas fa-sign-out-alt"></i> Sair
+      </button>
+    </aside>
+
+    
+    <div class="main-wrapper">
+      <header class="topbar">
+        <button class="topbar-menu" onclick="toggleSidebar()"><i class="fas fa-bars"></i></button>
+        <div class="topbar-title" id="topbarTitle">Início</div>
+        <div class="topbar-actions">
+          <button class="topbar-btn" onclick="navigate('mensagens', null)" title="Mensagens">
+            <i class="fas fa-envelope"></i>
+            <span class="topbar-badge" id="topBadge">2</span>
+          </button>
+          <div class="topbar-avatar" id="topbarAvatar">👤</div>
+        </div>
+      </header>
+
+      <main class="content" id="mainContent">
+      </main>
+    </div>
+  </div>
+
+  
+  <div class="modal-overlay hidden" id="msgModal">
+    <div class="modal">
+      <div class="modal-header">
+        <h3><i class="fas fa-paper-plane"></i> Nova Mensagem</h3>
+        <button onclick="closeModal('msgModal')"><i class="fas fa-times"></i></button>
+      </div>
+      <div class="modal-body">
+        <div class="input-group">
+          <label>Para</label>
+          <select id="msgTo"></select>
+        </div>
+        <div class="input-group">
+          <label>Assunto</label>
+          <input type="text" id="msgSubject" placeholder="Ex: Dúvida sobre a reunião..." />
+        </div>
+        <div class="input-group">
+          <label>Mensagem</label>
+          <textarea id="msgBody" rows="5" placeholder="Digite sua mensagem aqui..."></textarea>
+        </div>
+      </div>
+      <div class="modal-footer">
+        <button class="btn-secondary" onclick="closeModal('msgModal')">Cancelar</button>
+        <button class="btn-primary" onclick="sendMessage()"><i class="fas fa-paper-plane"></i> Enviar</button>
+      </div>
+    </div>
+  </div>
+
+ 
+  <div class="modal-overlay hidden" id="avisoModal">
+    <div class="modal">
+      <div class="modal-header">
+        <h3><i class="fas fa-bullhorn"></i> Novo Aviso</h3>
+        <button onclick="closeModal('avisoModal')"><i class="fas fa-times"></i></button>
+      </div>
+      <div class="modal-body">
+        <div class="input-group">
+          <label>Título</label>
+          <input type="text" id="avisoTitle" placeholder="Ex: Reunião de pais..." />
+        </div>
+        <div class="input-group">
+          <label>Conteúdo</label>
+          <textarea id="avisoBody" rows="5" placeholder="Descreva o aviso..."></textarea>
+        </div>
+        <div class="input-group">
+          <label>Categoria</label>
+          <select id="avisoCategoria">
+            <option value="geral">📢 Geral</option>
+            <option value="reuniao">🤝 Reunião</option>
+            <option value="evento">🎉 Evento</option>
+            <option value="urgente">🚨 Urgente</option>
+          </select>
+        </div>
+      </div>
+      <div class="modal-footer">
+        <button class="btn-secondary" onclick="closeModal('avisoModal')">Cancelar</button>
+        <button class="btn-primary" onclick="publishAviso()"><i class="fas fa-bullhorn"></i> Publicar</button>
+      </div>
+    </div>
+  </div>
+
+  
+  <div class="modal-overlay hidden" id="eventoModal">
+    <div class="modal">
+      <div class="modal-header">
+        <h3><i class="fas fa-calendar-plus"></i> Novo Evento</h3>
+        <button onclick="closeModal('eventoModal')"><i class="fas fa-times"></i></button>
+      </div>
+      <div class="modal-body">
+        <div class="input-group">
+          <label>Título do Evento</label>
+          <input type="text" id="eventoTitle" placeholder="Ex: Dia das Mães..." />
+        </div>
+        <div class="input-group">
+          <label>Data</label>
+          <input type="date" id="eventoData" />
+        </div>
+        <div class="input-group">
+          <label>Horário</label>
+          <input type="time" id="eventoHora" />
+        </div>
+        <div class="input-group">
+          <label>Descrição</label>
+          <textarea id="eventoDesc" rows="3" placeholder="Detalhes do evento..."></textarea>
+        </div>
+      </div>
+      <div class="modal-footer">
+        <button class="btn-secondary" onclick="closeModal('eventoModal')">Cancelar</button>
+        <button class="btn-primary" onclick="addEvento()"><i class="fas fa-plus"></i> Adicionar</button>
+      </div>
+    </div>
+  </div>
+
+  
+  <div class="toast hidden" id="toast">
+    <i class="fas fa-check-circle"></i>
+    <span id="toastMsg">Mensagem enviada!</span>
+  </div>
+
+  <script src="app.js"></script>
+</body>
+</html>
